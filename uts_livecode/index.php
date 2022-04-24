@@ -1,8 +1,8 @@
 <?php
 
 include 'functions.php';
-$data = query("SELECT * FROM tbl_143");
-var_dump($data);die;
+$data = query("SELECT * FROM tbl_fanani");
+// var_dump($data);die;
 ?>
 
 
@@ -31,34 +31,15 @@ var_dump($data);die;
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-        <div class="collapse navbar-collapse " id="navbarNav">
-            <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">MAHASISWA</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">DOSEN</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">STAFF</a>
-            </li>
-            </ul>
-        </div>
-    </nav>
     <div class="container">
-    <a href="tambah.php"><button type="button" class="btn btn-primary">TAMBAH MAHASISWA</button></a><br>
+    <a href="tambah.php"><button type="button" class="btn btn-primary">TAMBAH DATA</button></a><br>
         <table class="table table-striped">
         <thead style="background-color: cyan;">
             <tr>
             <th scope="col">No</th>
-            <th scope="col">NIM</th>
             <th scope="col">Nama</th>
+            <th scope="col">Email</th>
             <th scope="col">Alamat</th>
-            <th scope="col">Semester</th>
             <th scope="col">Aksi</th>
             </tr>
         </thead>
@@ -67,13 +48,12 @@ var_dump($data);die;
                 <?php $angka = 1; ?>
                 <?php foreach($data as $row): ?>
                 <td><?= $angka ?></td>
-                <td><?php $nim= $row["nim"] ?><?= $row["nim"] ?></td>
-                <td><?= $row["nama"] ?></td>
-                <td><?= $row["alamat"] ?></td>
-                <td><?= $row["semester"] ?></td>
+                <td><?= $row["nama_fanani"] ?></td>
+                <td><?= $row["email_fanani"] ?></td>
+                <td><?= $row["alamat_fanani"] ?></td>
             <td>
-                <a href="edit.php?nim=<?= $row['nim']?>"><button type="button" class="btn btn-primary">UBAH</button></a>
-                <a href="hapus.php?nim=<?=$row['nim']?>"><button type="button" class="btn btn-danger">HAPUS</button></a>
+                <a href="edit.php?id=<?= $row['id_fanani']?>"><button type="button" class="btn btn-primary">UBAH</button></a>
+                <a href="hapus.php?id=<?=$row['id_fanani']?>"><button type="button" class="btn btn-danger">HAPUS</button></a>
             </td>
             </tr>
             <?php $angka++;?>

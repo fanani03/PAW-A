@@ -1,6 +1,6 @@
 <?php
 
-$koneksi = mysqli_connect("localhost", "root", "", "fanani");
+$koneksi = mysqli_connect("localhost", "root", "", "db_143");
 
 function query($query) {
     global $koneksi;
@@ -18,38 +18,35 @@ function query($query) {
 
 function tambah($data) {
     global $koneksi;
-    // ambil data tiap elemen
-    $nim = $data["nim"];
+
     $nama = $data["nama"];
+    $email = $data["email"];
     $alamat = $data["alamat"];
-    $semester = $data["semester"];
 
     //query insert data
-    $query = "INSERT INTO tbl_143
+    $query = "INSERT INTO tbl_fanani
             VALUES
-            ('$nim', '$nama', '$alamat', '$semester')
+            ('','$nama', '$email', '$alamat')
         ";
     mysqli_query($koneksi, $query);
     //mengembalikan nilai apakah ada perubahan atau tidak
     return mysqli_affected_rows($koneksi);
 }
 
-
-
 function ubah($data) {
-    
     global $koneksi;
-    $nim = $data["nim"];
-    $nama = $data["nama"];
-    $alamat = $data["alamat"];
-    $semester = $data["semester"];
 
+    $id = $data["id"];
+    $nama = $data["nama"];
+    $email = $data["email"];
+    $alamat = $data["alamat"];
     
-    $query = "UPDATE tbl_143 SET
-                nama = '$nama',
-                alamat = '$alamat',
-                semester = '$semester'
-            WHERE nim = '$nim'
+    $query = "UPDATE tbl_fanani SET
+                nama_fanani = '$nama',
+                email_fanani = '$email',
+                alamat_fanani = '$alamat'
+    
+            WHERE id_fanani = '$id'
             ";
 // var_dump($query);die;
 // proses ke database
@@ -59,10 +56,9 @@ return mysqli_affected_rows($koneksi);
 
 
 
-
 function hapus_transaksi($id) {
     global $koneksi;
-    mysqli_query($koneksi, "DELETE FROM tbl_143 WHERE nim=$id");
+    mysqli_query($koneksi, "DELETE FROM tbl_fanani WHERE id_fanani=$id");
     //mengembalikan nilai apakah ada perubahan atau tidak
     return mysqli_affected_rows($koneksi);
 }

@@ -88,6 +88,30 @@ function simpan($data) {
     return mysqli_affected_rows($koneksi);
 }
 
+function ubah($data) {
+    
+    global $koneksi;
+    $nis = $data["nis"];
+    $username = $data["username"];
+    $pass = $data["password"];
+    $nama = $data["nama"];
+    $alamat = $data["alamat"];
+
+    
+    $query = "UPDATE tbl_user SET
+                nis = '$nis',
+                username = '$username',
+                password = '$pass',
+                nama = '$nama',
+                alamat = '$alamat'
+            WHERE nis = '$nis'
+            ";
+// var_dump($query);die;
+// proses ke database
+mysqli_query($koneksi, $query); 
+return mysqli_affected_rows($koneksi);
+}
+
 function upload_simpan() {
     // ambil isi dari $_FILES masukkan ke variabel
     $namaFile = $_FILES['berkas']['name'];

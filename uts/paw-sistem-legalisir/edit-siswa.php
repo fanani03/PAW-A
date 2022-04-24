@@ -14,9 +14,31 @@ if (!isset($_SESSION["login"]) ) {
     exit;
 }
 
-//$user = $_SESSION["logged_in_user"];
 require 'functions.php';
-$pengajuan = query("SELECT * FROM tbl_user");
+$nis = $_GET['nis'];
+$data = mysqli_query($koneksi, "SELECT * FROM tbl_user
+WHERE nis = '$nis'");
+$row = mysqli_fetch_assoc($data);
+
+if (isset($_POST["submit"])) {
+    
+
+    //cek apakah data berhasil ditambahkan
+    if (ubah($_POST) > 0) {
+        echo "<script>
+                alert('Data berhasil dirubah')
+                document.location.href = 'admin-list-siswa.php';
+                </script>
+                ";
+    } else {
+        echo "<script>
+                    alert('Data gagal dirubah')
+                    document.location.href = 'admin-list-siswa.php';
+              </script>
+            ";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +53,7 @@ $pengajuan = query("SELECT * FROM tbl_user");
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
-    <title>Siswa | Admin</title>
+    <title>Profil | Siswa</title>
     <!-- Bootstrap Core CSS -->
     <link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- chartist CSS -->
@@ -77,7 +99,7 @@ $pengajuan = query("SELECT * FROM tbl_user");
                 <!-- Logo -->
                 <!-- ============================================================== -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="#">
                         <!-- Logo icon -->
                         <b>
                             <!-- <i class="wi wi-sunset"></i> -->
@@ -98,14 +120,15 @@ $pengajuan = query("SELECT * FROM tbl_user");
                     <!-- ============================================================== -->
                     <ul class="navbar-nav mr-auto mt-md-0">
                         <!-- This is  -->
-                        <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="mdi mdi-menu"></i></a> </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="mdi mdi-menu"></i></a>
+                        </li>
                         <!-- ============================================================== -->
                         <!-- Search -->
                         <!-- ============================================================== -->
                         <li class="nav-item hidden-sm-down search-box"> <a class="nav-link hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
-                            <form action="" method="post" class="app-search">
-                                <input type="text" name="keyword" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a>
-                                <button type="submit" name="cari"></button>
+                            <form class="app-search">
+                                <input type="text" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a>
                             </form>
                         </li>
                     </ul>
@@ -117,7 +140,7 @@ $pengajuan = query("SELECT * FROM tbl_user");
                         <!-- Profile -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" />Admin</a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/user.png" alt="user" class="profile-pic m-r-10" />ADMIN</a>
                         </li>
                     </ul>
                 </div>
@@ -135,13 +158,13 @@ $pengajuan = query("SELECT * FROM tbl_user");
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        <li> <a class="waves-effect waves-dark" href="admin-dashboard.php" aria-expanded="false"><i class="mdi mdi-gauge"></i><span class="hide-menu">Dashboard</span></a>
+                        <li> <a class="waves-effect waves-dark" href="siswa-dashboard.php" aria-expanded="false"><i class="mdi mdi-gauge"></i><span class="hide-menu">Dashboard</span></a>
                         </li>
-                        <li> <a class="waves-effect waves-dark" href="admin-list-siswa.php" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">Data Siswa</span></a>
+                        <li> <a class="waves-effect waves-dark" href="siswa-profil.php?nis=<?= $user?>" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">Profil</span></a>
                         </li>
-                        <li> <a class="waves-effect waves-dark" href="admin-simpan.php" aria-expanded="false"><i class="mdi mdi-certificate"></i><span class="hide-menu">Data Sertifikat</span></a>
+                        <li> <a class="waves-effect waves-dark" href="siswa-pengajuan.php" aria-expanded="false"><i class="mdi mdi-folder-upload"></i><span class="hide-menu">Pengajuan</span></a>
                         </li>
-                        <!-- <li> <a class="waves-effect waves-dark" href="icon-material.html" aria-expanded="false"><i class="mdi mdi-emoticon"></i><span class="hide-menu">Icons</span></a>
+                        <!-- <li> <a class="waves-effect waves-dark" href="search.php" aria-expanded="false"><i class="mdi mdi-file-find"></i><span class="hide-menu">Cari Sertifikat</span></a>
                         </li>
                         <li> <a class="waves-effect waves-dark" href="map-google.html" aria-expanded="false"><i class="mdi mdi-earth"></i><span class="hide-menu">Google Map</span></a>
                         </li>
@@ -178,10 +201,10 @@ $pengajuan = query("SELECT * FROM tbl_user");
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 col-8 align-self-center">
-                        <h3 class="text-themecolor">Data Siswa</h3>
+                        <h3 class="text-themecolor">Profil Siswa</h3>
                     </div>
                     <div class="col-md-7 col-4 align-self-center">
-                        <a href="admin-logout.php" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down">Logout</a>
+                        <a href="siswa-logout.php" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down">Logout</a>
                     </div>
                 </div>
                 <!-- ============================================================== -->
@@ -191,51 +214,52 @@ $pengajuan = query("SELECT * FROM tbl_user");
                 <!-- Start Page Content -->
                 <!-- ============================================================== -->
                 <div class="row">
-                    <!-- column -->
-                    <div class="col-lg-12">
+                    <!-- Column -->
+                    <div class="col-lg-12 col-xlg-9 col-md-7">
                         <div class="card">
                             <div class="card-block">
-                                <h4 class="card-title">List Siswa</h4>
-                                <h6 class="card-subtitle"><a href="admin-list-siswa-register.php">Tambah Siswa</a></h6>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>NIS</th>
-                                                <th>Username</th>
-                                                <th>Nama</th>
-                                                <th>Alamat</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <?php $angka = 1; ?>
-                                        <?php foreach($pengajuan as $row): ?>
-                                        <tbody>
-                                            <tr>
-                                                <td><?= $angka ?></td>
-                                                <td><?= $row["nis"] ?></td>
-                                                <td><?= $row["username"] ?></td>
-                                                <td><?= $row["nama"] ?></td>
-                                                <td><?= $row["alamat"] ?></td>
-                                                <td> 
-                                                <a href="edit-siswa.php?nis=<?=$row['nis']?>"> <button type='button' class='btn btn-success'>EDIT</button></a>
-                                                    <a href="hapus-siswa.php?nis=<?=$row['nis']?>" onclick="return confirm('yakin??')";> <button type='button' class='btn btn-danger'>HAPUS</button></a>
-                                                    
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <?php $angka++; ?>
-                                        <?php endforeach; ?>
-                                    </table>
-                                </div>
+                                <form method="post" action="" class="form-horizontal form-material">
+                                    <div class="form-group">
+                                        <label class="col-md-6">Username</label>
+                                        <div class="col-md-6">
+                                            <input type="text" name="username" value="<?php echo $row['username'];?>" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-6">Password</label>
+                                        <div class="col-md-6">
+                                            <input type="text" name="password" value="<?php echo $row['password'];?>" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Nama</label>
+                                        <div class="col-md-12">
+                                            <input type="text" name="nama" value="<?php echo $row['nama'];?>" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Nomor Induk Siswa</label>
+                                        <div class="col-md-12">
+                                            <input type="text" name="nis" value="<?php echo $row['nis'];?>" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Alamat</label>
+                                        <div class="col-md-12">
+                                            <input type="text" name="alamat" value="<?php echo $row['alamat'];?>" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button type="submit" name="submit" class="btn btn-success">Edit Siswa</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- ============================================================== -->
-                <!-- End Page Content -->
-                <!-- ============================================================== -->
+                <!-- Column -->
             </div>
             <!-- ============================================================== -->
             <!-- End Container fluid  -->

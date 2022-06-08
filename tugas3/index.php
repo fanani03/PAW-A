@@ -2,7 +2,7 @@
 
 include 'functions.php';
 $data = query("SELECT * FROM tbl_143");
-var_dump($data);die;
+// var_dump($data);die;
 ?>
 
 

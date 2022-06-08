@@ -1,0 +1,196 @@
+<?php
+
+session_start();
+
+// if ( isset($_SESSION["login"]) ) {
+//     header("Location: index.php");
+// }
+
+require 'functions.php';
+if ( isset($_POST["login"]) ) {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    $resultUsername = mysqli_query($koneksi, "SELECT * FROM tbl_user WHERE username='$username'");
+    $resultAdmin = mysqli_query($koneksi, "SELECT * FROM tbl_admin WHERE username='$username'");
+    
+    //cek username ada di database apa tidak
+    if( mysqli_num_rows($resultUsername) === 1 ) {
+        //cek password
+        $row = mysqli_fetch_assoc($resultUsername);
+        if ($password === $row["password"]) {
+            //set session
+            $_SESSION["login"] = true;
+            $_SESSION["level"] = 'user';
+            $_SESSION["logged_in_user"] = $row["nis"];
+            $_SESSION["logged_in_nama"] = $row["nama"];
+            header("Location: siswa-dashboard.php");
+            exit;
+        }
+    // jika admin yang masuk
+    } elseif (mysqli_num_rows($resultAdmin) === 1 ) {
+        //cek password
+        $row = mysqli_fetch_assoc($resultAdmin);
+        if ($password === $row["password"]) {
+            //set session
+            $_SESSION["login"] = true;
+            $_SESSION["logged_in_user"] = $row["id_admin"];
+            $_SESSION["level"] = 'admin';
+            $_SESSION["logged_in_nama"] = $row["nama"];
+            header("Location: admin-dashboard.php");
+            exit;
+        }
+    }
+    $error = true;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+    <title>Login | Legalisir App</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- chartist CSS -->
+    <link href="assets/plugins/chartist-js/dist/chartist.min.css" rel="stylesheet">
+    <link href="assets/plugins/chartist-js/dist/chartist-init.css" rel="stylesheet">
+    <link href="assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css" rel="stylesheet">
+    <!--This page css - Morris CSS -->
+    <link href="assets/plugins/c3-master/c3.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- You can change the theme colors from here -->
+    <link href="css/colors/blue.css" id="theme" rel="stylesheet">
+    <!-- Sweet alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body class="fix-header fix-sidebar card-no-border">
+    <?php if (isset($error)) :?>
+        <script>
+            swal("Gagal Login", "Password atau Username yang anda masukkan salah!", "error");
+        </script>
+    <?php endif; ?>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+    <div class="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <div class="row page-titles">
+                <div class="col-md-5 col-8 align-self-center">
+                    <h3 class="text-themecolor">E-Legalisir SMKN 3 Jombang</h3>
+                </div>
+                <div class="col-md-7 col-4 align-self-center">
+                    <a href="search.php" class="btn waves-effect waves-light btn-info pull-right hidden-sm-down">Cek Sertifikat</a>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Start Page Content -->
+            <!-- ============================================================== -->
+            <!-- Row -->
+            <div class="row">
+                <!-- Column -->
+                <div class="" style=" padding-top: 5%; display:flex; margin:auto;">
+                    <img src="assets/images/awal.png" style="height:300px;">
+                    <div class="card"  style="width: 450px; margin-left:10%;">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-12">
+                                    <form action="" method="POST">
+                                        <div class="col-12">
+                                            <p style="font-size: 2rem; font-weight: 800; text-align:center; margin-bottom: 20px;">Login</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" name="username" id="username" placeholder="Username" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <button name="login" value="Login" class="btn btn-info btn-lg btn-block">Login</button>
+                                        </div>
+                                        <p style="text-align:center;">
+                                            <a href="#" onclick="javascript:swal('Tetap Tenang', 'Coba ingat terlebih dahulu password yang anda gunakan', 'info');return false;">Lupa Password</a>
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Page Content -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page wrapper  -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+    <script src="assets/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="assets/plugins/bootstrap/js/tether.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="js/jquery.slimscroll.js"></script>
+    <!--Wave Effects -->
+    <script src="js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="js/sidebarmenu.js"></script>
+    <!--stickey kit -->
+    <script src="assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+    <!--Custom JavaScript -->
+    <script src="js/custom.min.js"></script>
+    <!-- ============================================================== -->
+    <!-- This page plugins -->
+    <!-- ============================================================== -->
+    <!-- chartist chart -->
+    <script src="assets/plugins/chartist-js/dist/chartist.min.js"></script>
+    <script src="assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js"></script>
+    <!--c3 JavaScript -->
+    <script src="assets/plugins/d3/d3.min.js"></script>
+    <script src="assets/plugins/c3-master/c3.min.js"></script>
+    <!-- Chart JS -->
+    <script src="js/dashboard1.js"></script>
+</body>
+</html>

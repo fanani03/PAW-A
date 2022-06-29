@@ -19,6 +19,9 @@ function query($query) {
     return $rows;
 }
 
+// ===================SISWA===============================================
+
+// ===================SISWA===============================================
 function ajukan($data) {
     global $koneksi;
     $nama = $data["nama"];
@@ -69,6 +72,71 @@ function upload() {
     return $namaFileBaru;
 }
 
+
+
+// ===================SISWA===============================================
+
+// ===================SISWA===============================================
+
+
+
+
+
+
+
+
+// =====================ADMIN============================================
+
+// =====================ADMIN============================================
+
+function tambah($data) {
+    global $koneksi;
+
+    $nis = $data["nis"];
+    $ketemu = query("SELECT nis FROM tbl_user WHERE nis = $nis");
+
+    if (!$nis == $ketemu) {
+        $nis = $data["nis"];
+        $username = $data["username"];
+        $pass = $data["password"];
+        $nama = $data["nama"];
+        $alamat = $data["alamat"];
+    
+        //query insert data
+        $query = "INSERT INTO tbl_user
+                VALUES
+                ('$nis','$username', '$pass', '$nama', '$alamat')
+            ";
+        mysqli_query($koneksi, $query);
+        //mengembalikan nilai apakah ada perubahan atau tidak
+        return mysqli_affected_rows($koneksi);
+    }
+
+
+}
+
+
+function tambahAdmin($data) {
+    global $koneksi;
+    // var_dump($data);die;
+    // ambil data tiap elemen
+    $nip = $data["nip"];
+    $username = $data["username"];
+    $pass = $data["password"];
+    $nama = $data["nama"];
+    $alamat = $data["alamat"];
+
+    //query insert data
+    $query = "INSERT INTO tbl_admin
+            VALUES
+            ('','$username', '$pass', '$nama', '$nip','$alamat')
+        ";
+    mysqli_query($koneksi, $query);
+    //mengembalikan nilai apakah ada perubahan atau tidak
+    return mysqli_affected_rows($koneksi);
+}
+
+
 function simpan($data) {
     global $koneksi;
     $nis = $data["nis"];
@@ -97,29 +165,6 @@ function simpan($data) {
     return mysqli_affected_rows($koneksi);
 }
 
-function ubah($data) {
-    
-    global $koneksi;
-    $nis = $data["nis"];
-    $username = $data["username"];
-    $pass = $data["password"];
-    $nama = $data["nama"];
-    $alamat = $data["alamat"];
-
-    
-    $query = "UPDATE tbl_user SET
-                nis = '$nis',
-                username = '$username',
-                password = '$pass',
-                nama = '$nama',
-                alamat = '$alamat'
-            WHERE nis = '$nis'
-            ";
-// var_dump($query);die;
-// proses ke database
-mysqli_query($koneksi, $query); 
-return mysqli_affected_rows($koneksi);
-}
 
 function upload_simpan() {
     // ambil isi dari $_FILES masukkan ke variabel
@@ -141,6 +186,89 @@ function upload_simpan() {
     return $namaFile;
 }
 
+
+function ubah($data) {
+
+    // var_dump($data);die;
+    
+    global $koneksi;
+    $nis = $data["nis"];
+    $username = $data["username"];
+    $pass = $data["password"];
+    $nama = $data["nama"];
+    $alamat = $data["alamat"];
+
+    
+    $query = "UPDATE tbl_user SET
+                nis = '$nis',
+                username = '$username',
+                password = '$pass',
+                nama = '$nama',
+                alamat = '$alamat'
+            WHERE nis = '$nis'
+            ";
+
+    mysqli_query($koneksi, $query); 
+    return mysqli_affected_rows($koneksi);
+}
+
+
+function ubahAdmin($data) {
+    
+    
+    global $koneksi;
+    $id_admin = $data['id_admin'];
+    // var_dump($id_admin);die;
+    $username = $data['username'];
+    $password = $data['password'];
+    $nama = $data['nama'];
+    $nip = $data['nip'];
+    $alamat = $data['alamat'];
+
+    $query = "UPDATE tbl_admin SET
+                id_admin = '$id_admin',
+                username = '$username',
+                password = '$password',
+                nama = '$nama',
+                nip = '$nip',
+                alamat = '$alamat'
+                WHERE id_admin = '$id_admin'";
+    mysqli_query($koneksi, $query); 
+    return mysqli_affected_rows($koneksi);
+                
+}
+
+
+function update($data){
+    global $koneksi;
+    $nis = $data["nis"];
+    $idtrans = $data["idtrans"];
+    $namaFile = $data["namaFile"];
+    $nosertif = $data["nosertif"];
+
+    $berkas = upload_simpan();
+    if ( !$berkas) {
+        return false;
+    }
+
+    $edit_simpan = mysqli_query($koneksi, "INSERT INTO tbl_simpan
+    VALUES
+    ('','$nis','$idtrans', '$namaFile','$nosertif', '$berkas')");
+    $edit_trans = mysqli_query($koneksi, "UPDATE tbl_transaksi SET status ='selesai' WHERE id_transaksi = '$_GET[id]'");
+    return mysqli_affected_rows($koneksi);    
+}
+
+
+
+// =====================ADMIN============================================
+
+// =====================ADMIN============================================
+
+
+
+
+
+
 function hapus($id) {
     global $koneksi;
     mysqli_query($koneksi, "DELETE FROM tbl_user WHERE nis=$id");
@@ -155,59 +283,13 @@ function hapus_transaksi($id) {
     return mysqli_affected_rows($koneksi);
 }
 
-function tambah($data) {
-    global $koneksi;
-    // var_dump($data);die;
-    // ambil data tiap elemen
-    $nis = $data["nis"];
-    $username = $data["username"];
-    $pass = $data["password"];
-    $nama = $data["nama"];
-    $alamat = $data["alamat"];
 
-    //query insert data
-    $query = "INSERT INTO tbl_user
-            VALUES
-            ('$nis','$username', '$pass', '$nama', '$alamat')
-        ";
-    mysqli_query($koneksi, $query);
-    //mengembalikan nilai apakah ada perubahan atau tidak
-    return mysqli_affected_rows($koneksi);
-}
 
-function update($data){
-    global $koneksi;
-    $nis = $data["nis"];
-    $idtrans = $data["idtrans"];
-    $namaFile = $data["namaFile"];
-    $nosertif = $data["nosertif"];
 
-    $berkas = upload_simpan();
-    if ( !$berkas) {
-        return false;
-    }
-    // $src = mysqli_query($koneksi, "SELECT max(id_simpan) AS idmax FROM tbl_simpan");
-    // $srcMax = mysqli_fetch_array($src);
-    // $srcMaxNext = (int)$srcMax['idmax'] + 1;
-    // $nosertif = $nis.$srcMaxNext.substr(getdate()['0'], -6);
-    // echo $nosertif;
-    $edit_simpan = mysqli_query($koneksi, "INSERT INTO tbl_simpan
-    VALUES
-    ('','$nis','$idtrans', '$namaFile','$nosertif', '$berkas')");
-    $edit_trans = mysqli_query($koneksi, "UPDATE tbl_transaksi SET status ='selesai' WHERE id_transaksi = '$_GET[id]'");
-    return mysqli_affected_rows($koneksi);    
-}
 
-function cari($keyword) {
-    $query = "SELECT * FROM tbl_transaksi
-                WHERE
-                nama LIKE '%$keyword%' OR
-                nama_file LIKE '%$keyword%' OR
-                nis LIKE '%$keyword%' OR
-                berkas LIKE '%$keyword%'
-            ";
 
-    return query($query);
-}
+
+
+
 
 ?>

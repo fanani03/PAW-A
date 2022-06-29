@@ -3,28 +3,18 @@
 session_start();
 
 // set yang bisa masuk hanya admin
-// if (!isset($_SESSION["login"]) ) {
-//     $_SESSION["logged_in_user"] = '';
-//     if ($_SESSION["logged_in_user"] != 'admin') {
-//         header("Location: index.php");
-//         exit;
-//     }
-// } elseif($_SESSION["logged_in_user"] != 'admin') {
-//     header("Location: index.php");
-//     exit;
-// }
-
-
-if (isset($_SESSION["login"]) ) {
-    // $_SESSION["logged_in_user"] = '';
-    if ($_SESSION["level"] != 'admin') {
-        header("Location: index.php");
+if ( !isset($_SESSION["login"]) ) {
+    header("Location: login.php");
+    exit;
+} else {
+    if ($_SESSION['level'] != 'admin') {
+        header("Location: login.php");
         exit;
     }
 }
 
 
-
+$user = $_SESSION['logged_in_nama'];
 require 'functions.php';
 
 // $koneksi = mysqli_connect("localhost", "root", "", "db_sekolah");
@@ -132,7 +122,7 @@ $data = query("SELECT tbl_simpan.*, tbl_user.nama
                         <!-- Profile -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" />Admin</a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" /><?=$user?></a>
                         </li>
                     </ul>
                 </div>
@@ -222,6 +212,7 @@ $data = query("SELECT tbl_simpan.*, tbl_user.nama
                                                 <th>Nama File</th>
                                                 <th>No Sertifikat</th>
                                                 <th>Berkas</th>
+                                                <th>Download</th>
                                             </tr>
                                         </thead>
                                         <?php $angka = 1; ?>
@@ -234,6 +225,10 @@ $data = query("SELECT tbl_simpan.*, tbl_user.nama
                                                 <td><?= $row["nama_file"] ?> </td>
                                                 <td><?= $row["no_sertifikat"] ?></td>
                                                 <td><?= $row["berkas"] ?></td>
+                                                <td>
+                                                    <a href="download.php?berkas=<?= $row['berkas']?> &nama= <?=$row['nis']?>"><button type='button' class='btn btn-primary'>Download</button></a>
+                                                    <!-- <a href='download.php?berkas=$data[berkas]&nama=$user'> -->
+                                                </td>
                                             </tr>
                                         </tbody>
                                         <?php $angka++; ?>
@@ -254,7 +249,7 @@ $data = query("SELECT tbl_simpan.*, tbl_user.nama
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

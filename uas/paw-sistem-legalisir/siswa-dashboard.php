@@ -2,19 +2,30 @@
 
 session_start();
 
+
+
+// set yang bisa masuk hanya user
 if ( !isset($_SESSION["login"]) ) {
-    header("Location: index.php");
+    header("Location: login.php");
     exit;
+} else {
+    if ($_SESSION['level'] != 'user') {
+        header("Location: login.php");
+        exit;
+    }
 }
 
 //set session hanya untuk user saja
 $user = $_SESSION["logged_in_user"];
+// var_dump($user);die;
+$namauser = $_SESSION["logged_in_nama"];
 
 require 'functions.php';
 $pengajuan = query("SELECT * FROM tbl_transaksi
 WHERE tbl_transaksi.nis = '$user'");
+$sertifikat = query("SELECT * FROM tbl_simpan WHERE tbl_simpan.nis = $user");
 
-$namauser = $_SESSION["logged_in_nama"];
+
 
 ?>
 
@@ -195,7 +206,7 @@ $namauser = $_SESSION["logged_in_nama"];
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-block">
-                                <h4 class="card-title">Data Berkas</h4>
+                                <h4 class="card-title">Data Pengajuan</h4>
                                 <!-- <h6 class="card-subtitle">Add class <code>.table</code></h6> -->
                                 <div class="table-responsive">
                                     <table class="table">
@@ -251,6 +262,59 @@ $namauser = $_SESSION["logged_in_nama"];
                         </div>
                     </div>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!-- SECTION DATA SERTIFIKAT -->
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-block">
+                                <h4 class="card-title">Data Sertifikat</h4>
+                                <!-- <h6 class="card-subtitle">Add class <code>.table</code></h6> -->
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Nama File</th>
+                                                <th>Nama Berkas</th>
+                                                <th>No. Sertifikat</th>
+                                                <th>Download</th>
+                                            </tr>
+                                        </thead>
+                                        <?php $angka = 1; ?>
+                                        <?php foreach($sertifikat as $row): ?>
+                                        <tbody>
+                                            <tr>
+                                                <td><?= $angka?></td>
+                                                <td><?= $row["nama_file"] ?></td>
+                                                <td><?= $row["berkas"] ?></td>
+                                                <td><?= $row["no_sertifikat"] ?></td>
+                                                <td>
+                                                <a href="download.php?berkas=<?= $row['berkas']?> &nama= <?=$row['nis']?>"><button type='button' class='btn btn-primary'>Download</button></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <?php $angka++;?>
+                                        <?php endforeach;?>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- ============================================================== -->
                 <!-- End Page Content -->
                 <!-- ============================================================== -->
@@ -261,7 +325,7 @@ $namauser = $_SESSION["logged_in_nama"];
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

@@ -3,15 +3,18 @@
 session_start();
 
 // set yang bisa masuk hanya admin
-if (isset($_SESSION["login"]) ) {
-    // $_SESSION["logged_in_user"] = '';
-    if ($_SESSION["level"] != 'admin') {
-        header("Location: index.php");
+if ( !isset($_SESSION["login"]) ) {
+    header("Location: login.php");
+    exit;
+} else {
+    if ($_SESSION['level'] != 'admin') {
+        header("Location: login.php");
         exit;
     }
 }
 
-//$user = $_SESSION["logged_in_user"];
+$user = $_SESSION['logged_in_nama'];
+
 require 'functions.php';
 $pengajuan = query("SELECT * FROM tbl_user");
 ?>
@@ -114,7 +117,7 @@ $pengajuan = query("SELECT * FROM tbl_user");
                         <!-- Profile -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" />Admin</a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" /><?=$user?></a>
                         </li>
                     </ul>
                 </div>
@@ -216,8 +219,9 @@ $pengajuan = query("SELECT * FROM tbl_user");
                                                 <td><?= $row["nama"] ?></td>
                                                 <td><?= $row["alamat"] ?></td>
                                                 <td> 
-                                                <a href="edit-siswa.php?nis=<?=$row['nis']?>"> <button type='button' class='btn btn-success'>EDIT</button></a>
-                                                    <a href="hapus-siswa.php?nis=<?=$row['nis']?>" onclick="return confirm('yakin??')";> <button type='button' class='btn btn-danger'>HAPUS</button></a>
+                                                <a href="admin-edit-siswa.php?nis=<?=$row['nis']?>"> <button type='button' class='btn btn-success'>EDIT </button></a>
+                                                <a href="hapus-siswa.php?nis=<?=$row['nis']?>" onclick="return confirm('yakin??')";> <button type='button' class='btn btn-danger'>HAPUS</button></a>
+                                                
                                                     
                                                 </td>
                                             </tr>
@@ -240,7 +244,7 @@ $pengajuan = query("SELECT * FROM tbl_user");
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

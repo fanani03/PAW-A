@@ -2,9 +2,15 @@
 
 session_start();
 
+// set yang bisa masuk hanya user
 if ( !isset($_SESSION["login"]) ) {
-    header("Location: index.php");
+    header("Location: login.php");
     exit;
+} else {
+    if ($_SESSION['level'] != 'user') {
+        header("Location: login.php");
+        exit;
+    }
 }
 
 //set session hanya untuk user saja
@@ -254,7 +260,7 @@ $siswa = mysqli_fetch_array($sql);
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

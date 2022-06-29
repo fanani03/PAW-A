@@ -3,15 +3,14 @@
 session_start();
 
 // set yang bisa masuk hanya admin
-if (!isset($_SESSION["login"]) ) {
-    $_SESSION["logged_in_user"] = '';
-    if ($_SESSION["logged_in_user"] != 'admin') {
-        header("Location: index.php");
+if ( !isset($_SESSION["login"]) ) {
+    header("Location: login.php");
+    exit;
+} else {
+    if ($_SESSION['level'] != 'admin') {
+        header("Location: login.php");
         exit;
     }
-} elseif($_SESSION["logged_in_user"] != 'admin') {
-    header("Location: index.php");
-    exit;
 }
 
 require 'functions.php';
@@ -30,7 +29,7 @@ if (isset($_POST["submit"])) {
                 ";
     } else {
         echo "<script>
-                    alert('Data gagal dimasukkan')
+                    alert('NIS telah digunakan, data gagal dimasukkan')
                     document.location.href = 'admin-list-siswa.php';
                 </script>
             ";
@@ -266,7 +265,7 @@ if (isset($_POST["submit"])) {
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

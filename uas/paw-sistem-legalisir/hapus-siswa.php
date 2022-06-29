@@ -2,15 +2,14 @@
 session_start();
 
 // set yang bisa masuk hanya admin
-if (!isset($_SESSION["login"]) ) {
-    $_SESSION["logged_in_user"] = '';
-    if ($_SESSION["logged_in_user"] != 'admin') {
-        header("Location: index.php");
+if ( !isset($_SESSION["login"]) ) {
+    header("Location: login.php");
+    exit;
+} else {
+    if ($_SESSION['level'] != 'admin') {
+        header("Location: login.php");
         exit;
     }
-} elseif($_SESSION["logged_in_user"] != 'admin') {
-    header("Location: index.php");
-    exit;
 }
 
 require 'functions.php';

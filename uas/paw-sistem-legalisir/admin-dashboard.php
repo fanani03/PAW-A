@@ -4,25 +4,26 @@ session_start();
 
 // var_dump($_SESSION);die;
 // set yang bisa masuk hanya admin
-if (isset($_SESSION["login"]) ) {
-    // $_SESSION["logged_in_user"] = '';
-    if ($_SESSION["level"] != 'admin') {
-        header("Location: index.php");
+
+if ( !isset($_SESSION["login"]) ) {
+    header("Location: login.php");
+    exit;
+} else {
+    if ($_SESSION['level'] != 'admin') {
+        header("Location: login.php");
         exit;
     }
 }
 
-
+$login = $_SESSION['logged_in_user'];
+$user = $_SESSION['logged_in_nama'];
+// var_dump($login);die;
 
 require 'functions.php';
-$pengajuan = query("SELECT * FROM tbl_transaksi");
+$pengajuan = query("SELECT * FROM tbl_transaksi WHERE tbl_transaksi.id_admin = $login");
+$semuaPengajuan = query("SELECT * FROM tbl_transaksi");
 
-// tombol cari ditekan
-if (isset($_POST["cari"])) {
-    // ambil apapun dari yang ditekan user masukkan ke function cari
-    $pengajuan = cari($_POST["keyword"]);
 
-}
 ?>
 
 <!DOCTYPE html>
@@ -108,12 +109,6 @@ if (isset($_POST["cari"])) {
                         <!-- ============================================================== -->
                         <!-- Search -->
                         <!-- ============================================================== -->
-                        <li class="nav-item hidden-sm-down search-box"> <a class="nav-link hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
-                            <form action="" method="post" class="app-search">
-                                <input type="text" name="keyword" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a>
-                                <button type="submit" name="cari"></button>
-                            </form>
-                        </li>
                     </ul>
                     <!-- ============================================================== -->
                     <!-- User profile and search -->
@@ -123,7 +118,7 @@ if (isset($_POST["cari"])) {
                         <!-- Profile -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" />Admin</a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/admin.jpg" alt="user" class="profile-pic m-r-10" /><?=$user?></a>
                         </li>
                     </ul>
                 </div>
@@ -250,7 +245,7 @@ if (isset($_POST["cari"])) {
                                                     <?php
                                                         if ($row['status'] == 'pending') {
                                                             echo "<a href='update-status.php?id=$row[id_transaksi]&stat=pending'><button type='button' class='btn btn-success'>Proses</button></a>";
-                                                            echo "<a href='update   -status.php?id=$row[id_transaksi]&stat=tolak'><button type='button' class='btn btn-danger'>Tolak</button></a>";
+                                                            echo "<a href='update-status.php?id=$row[id_transaksi]&stat=tolak'><button type='button' class='btn btn-danger'>Tolak</button></a>";
                                                         } 
                                                         else if ($row['status'] == 'proses') {
                                                            // echo "<a href='#'>Proses </a>";
@@ -275,6 +270,77 @@ if (isset($_POST["cari"])) {
                 <!-- ============================================================== -->
                 <!-- End Page Content -->
                 <!-- ============================================================== -->
+                <!-- Start Page Content 2 -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-block">
+                                <h4 class="card-title">Data Semua Transaksi Siswa</h4>
+                                <!-- <h6 class="card-subtitle">Add class <code>.table</code></h6> -->
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>NIS</th>
+                                                <th>Nama</th>
+                                                <th>Nama File</th>
+                                                <th>Berkas</th>
+                                                <th>Status</th>
+                                                <th>Download</th>
+                                                <th>Aksi</th>
+                                                
+                                                
+                                            </tr>
+                                        </thead>
+                                        <?php $angka = 1; ?>
+                                        <?php foreach($semuaPengajuan as $row): ?>
+                                        <tbody>
+                                            <tr>
+                                                <td><?= $angka ?></td>
+                                                <td><?php $nis= $row["nis"] ?><?= $row["nis"] ?></td>
+                                                <td><?= $row["nama"] ?></td>
+                                                <td><?= $row["nama_file"] ?></td>
+                                                <td><?= $row["berkas"] ?></td>
+                                                <td><?= $row["status"] ?></td>
+                                                <td>
+                                                    <?php if ($row['status'] === 'pending') {
+                                                        echo "<a href='download.php?berkas=" . $row['berkas'] . "&nama=" . $row['nama'] . "'><button type='button' class='btn btn-info'>Download</button></a>";
+                                                    } else {
+                                                        echo 'Ditangani';
+                                                    }
+
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($row['status'] === 'pending') {
+                                                    
+                                                        echo "<a href='update-status.php?id=$row[id_transaksi]&stat=pending'><button type='button' class='btn btn-success'>Proses</button></a>";
+                                                        echo "<a href='update-status.php?id=$row[id_transaksi]&stat=tolak'><button type='button' class='btn btn-danger'>Tolak</button></a>";
+                                                    } else {
+                                                        echo 'Ditangani';
+                                                    }
+                                        
+                                                    
+                                                    ?>
+                                                </td>
+                                                
+
+                                            </tr>
+                                        </tbody>
+                                        <?php $angka++;?>
+                                        <?php endforeach;?>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
             </div>
             <!-- ============================================================== -->
             <!-- End Container fluid  -->
@@ -282,7 +348,7 @@ if (isset($_POST["cari"])) {
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

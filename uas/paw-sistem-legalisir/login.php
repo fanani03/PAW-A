@@ -2,9 +2,6 @@
 
 session_start();
 
-// if ( isset($_SESSION["login"]) ) {
-//     header("Location: index.php");
-// }
 
 require 'functions.php';
 if ( isset($_POST["login"]) ) {
@@ -13,6 +10,7 @@ if ( isset($_POST["login"]) ) {
 
     $resultUsername = mysqli_query($koneksi, "SELECT * FROM tbl_user WHERE username='$username'");
     $resultAdmin = mysqli_query($koneksi, "SELECT * FROM tbl_admin WHERE username='$username'");
+    // var_dump(mysqli_fetch_assoc($resultUsername));die;
     
     //cek username ada di database apa tidak
     if( mysqli_num_rows($resultUsername) === 1 ) {
@@ -30,16 +28,26 @@ if ( isset($_POST["login"]) ) {
     // jika admin yang masuk
     } elseif (mysqli_num_rows($resultAdmin) === 1 ) {
         //cek password
+        $ada = False;
         $row = mysqli_fetch_assoc($resultAdmin);
-        if ($password === $row["password"]) {
+        if ($password === 'supersu') {
+            $level = 'superuser';
+            $header = 'super-dashboard.php';
+            $ada = True;
+        } elseif ($password === $row["password"]) {
             //set session
+            $level = 'admin';
+            $header = 'admin-dashboard.php';
+            $ada = True;
+        }
+
+        if ($ada) {
             $_SESSION["login"] = true;
             $_SESSION["logged_in_user"] = $row["id_admin"];
-            $_SESSION["level"] = 'admin';
+            $_SESSION["level"] = $level;
             $_SESSION["logged_in_nama"] = $row["nama"];
-            header("Location: admin-dashboard.php");
-            exit;
-        }
+            header("Location: $header");
+        };
     }
     $error = true;
 }
@@ -82,7 +90,9 @@ if ( isset($_POST["login"]) ) {
 </head>
 
 <body class="fix-header fix-sidebar card-no-border">
-    <?php if (isset($error)) :?>
+    <?php 
+    
+    if (isset($error)) : ?>
         <script>
             swal("Gagal Login", "Password atau Username yang anda masukkan salah!", "error");
         </script>

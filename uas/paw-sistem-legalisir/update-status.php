@@ -6,7 +6,7 @@ session_start();
 if (isset($_SESSION["login"]) ) {
     // $_SESSION["logged_in_user"] = '';
     if ($_SESSION["level"] != 'admin') {
-        header("Location: index.php");
+        header("Location: login.php");
         exit;
     }
 }

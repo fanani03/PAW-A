@@ -2,9 +2,15 @@
 
 session_start();
 
+// set yang bisa masuk hanya user
 if ( !isset($_SESSION["login"]) ) {
-    header("Location: index.php");
+    header("Location: login.php");
     exit;
+} else {
+    if ($_SESSION['level'] != 'user') {
+        header("Location: login.php");
+        exit;
+    }
 }
 
 //set session hanya untuk user saja
@@ -180,6 +186,7 @@ $row = mysqli_fetch_assoc($data);
                 <div class="row page-titles">
                     <div class="col-md-5 col-8 align-self-center">
                         <h3 class="text-themecolor">Profil Siswa</h3>
+                        
                     </div>
                     <div class="col-md-7 col-4 align-self-center">
                         <a href="siswa-logout.php" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down">Logout</a>
@@ -196,6 +203,8 @@ $row = mysqli_fetch_assoc($data);
                     <div class="col-lg-12 col-xlg-9 col-md-7">
                         <div class="card">
                             <div class="card-block">
+                            <h4 class="card-title">Detail Siswa</h4>
+                                <h6 class="card-subtitle"><a href="siswa-profil-edit.php?nis=<?=$row['nis']?>">Edit Data</a></h6>
                                 <form method="post" action="" enctype="multipart/form-data" class="form-horizontal form-material">
                                     <div class="form-group">
                                         <label class="col-md-6">Username</label>
@@ -240,7 +249,7 @@ $row = mysqli_fetch_assoc($data);
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2021 </footer>
+            <footer class="footer" style="text-align:center;"> Copyright &copy; Legalisir App | 2022 </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->

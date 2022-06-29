@@ -151,7 +151,7 @@ if ( isset($_GET['cari']) ) {
             <!-- End footer -->
             <!-- ============================================================== -->
         </div>
-        <footer class="footer" style="text-align:center; margin-left: -240px;"> Copyright &copy; Legalisir App | 2021 </footer>
+        <footer class="footer" style="text-align:center; margin-left: -240px;"> Copyright &copy; Legalisir App | 2022 </footer>
         <!-- ============================================================== -->
         <!-- End Page wrapper  -->
         <!-- ============================================================== -->
